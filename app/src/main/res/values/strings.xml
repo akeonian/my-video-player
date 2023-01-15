@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Video Player</string>
+
+    <string name="media_url">https://storage.googleapis.com/exoplayer-test-media-0/play.mp3</string>
+    <string name="dialog_title_video_list_option">Select..</string>
+    <string name="permission_required">Read permission is required to read data</string>
+</resources>

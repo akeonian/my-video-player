@@ -15,15 +15,15 @@ import com.example.android.myvideoplayer.viewmodels.MainPlayerViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val REQUEST_CODE = 1234
     private val _player = MutableLiveData<ExoPlayer?>(null)
     private val viewModel: MainPlayerViewModel by viewModels()
 
     val player : LiveData<ExoPlayer?> = _player
 
-    private val permissionHelper = PermissionHelper(arrayOf(
-        PermissionHelper.Permission(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+    private val permissionHelper = PermissionHelper(
+        3,
+        arrayOf(PermissionHelper.Permission(
+            READ_PERMISSION,
             "Read Permission is needed to read video files",
             true
         )
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestPermissionAndInitialize(){
-        val b =  permissionHelper.askForPermission(this, REQUEST_CODE) { _, _ -> finish() }
+        val b =  permissionHelper.askForPermission(this, REQUEST_CODE) { finish() }
         if (b) {
             setContentView(R.layout.activity_main)
 
@@ -56,7 +56,9 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        requestPermissionAndInitialize()
+        if (requestCode == REQUEST_CODE) {
+            requestPermissionAndInitialize()
+        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
@@ -150,4 +152,13 @@ class MainActivity : AppCompatActivity() {
         addMediaItems(videoData.map { it.mediaItem })
     }
 
+    companion object {
+        private val REQUEST_CODE = 1234
+
+        private val READ_PERMISSION = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            android.Manifest.permission.READ_MEDIA_VIDEO
+        } else {
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+    }
 }
